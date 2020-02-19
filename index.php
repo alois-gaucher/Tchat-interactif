@@ -8,8 +8,6 @@ require('config.inc.php');
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>Tchat - Aloïs GAUCHER</title>
-    <!-- MDB icon -->
-    <link rel="icon" href="img/mdb-favicon.ico" type="image/x-icon">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
     <!-- Google Fonts Roboto -->
@@ -45,7 +43,7 @@ require('config.inc.php');
             </table>
         </div>
         <div class="col-md-4 col-sm-12">
-            <form method="POST" action="dire.php" class="border border-light p-5 mx-auto">
+            <form id="formulaire" method="POST" action="dire.php" class="border border-light p-5 mx-auto">
                 <p class="h4 mb-4 text-center">Envoyer un message</p>
                 <div class="md-form">
                     <input name="pseudo" type="text" id="pseudo" class="form-control">
@@ -57,6 +55,7 @@ require('config.inc.php');
                     <label for="message">Message</label>
                 </div>
                 <button class="btn btn-info btn-block my-4" id="envoi" type="submit">Envoyer le message</button>
+                <button class="btn btn-alert btn-block my-4" id="wizz">Wizz!</button>
         </div>
         </form>
     </div>
@@ -75,6 +74,28 @@ require('config.inc.php');
 <script type="text/javascript"></script>
 
 <script>
+    $('#wizz').click(function (e) {
+        e.preventDefault(); // on empêche le bouton d'envoyer le formulaire
+        var pseudo = $('#pseudo').val();
+        var message = 'A envoyé un Wizz !';
+
+        if (pseudo != "") { // on vérifie que les variables ne sont pas vides
+            $.ajax({
+                url: "dire.php", // on donne l'URL du fichier de traitement
+                type: "POST", // la requête est de type POST
+                data: "pseudo=" + pseudo + "&message=" + message // et on envoie nos données
+            });
+
+            $('#chat').prepend('<tr><td>' + pseudo + '</td><td>' + message + '</td></tr>'); // on ajoute le message dans la zone prévue
+            var audio = new Audio('nudge.mp3');
+            audio.play();
+        }
+        else (alert('Veuillez entrer un pseudo !'));
+    });
+
+</script>
+
+<script>
     $('#envoi').click(function (e) {
         e.preventDefault(); // on empêche le bouton d'envoyer le formulaire
 
@@ -87,16 +108,16 @@ require('config.inc.php');
                 type: "POST", // la requête est de type POST
                 data: "pseudo=" + pseudo + "&message=" + message // et on envoie nos données
             });
-
+            $('#message').val('');
             $('#chat').prepend('<tr><td>' + pseudo + '</td><td>' + message + '</td></tr>'); // on ajoute le message dans la zone prévue
         }
+        else alert('Veuillez écrire un pseudo et/ou un message !')
     });
 </script>
 
 <script>
     $(document).ready(function () {
         setInterval(function () {
-            console.info('ça tourne');
             $.get("affiche.php").done(function (donnees) {
                 $("#chat").html(donnees);
             });

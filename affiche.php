@@ -7,7 +7,7 @@ $requete = 'SELECT * FROM chat ORDER BY id DESC LIMIT 10';
 $resultat = $bdd->query($requete);
     // on inscrit tous les nouveaux messages dans une variable
     while ($donnees = $resultat->fetch()) {
-      echo '<tr><td>'.$donnees['pseudo'].'</td><td>'.$donnees['message'].'</td></tr>';
+      echo '<tr><td>'.$donnees['pseudo'].'</td><td>'.str_replace(':)', '😀', $donnees['message']).'</td></tr>';
     }
 
 ?>
